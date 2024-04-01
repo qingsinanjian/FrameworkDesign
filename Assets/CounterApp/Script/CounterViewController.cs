@@ -9,8 +9,8 @@ namespace CounterApp
     {
         private void Start ()
         {
-            CounterModel.Count.OnValueChanged += OnCountChanged;
-            OnCountChanged(CounterModel.Count.Value);
+            CounterModel.Instance.Count.OnValueChanged += OnCountChanged;
+            OnCountChanged(CounterModel.Instance.Count.Value);
             //UpdateView();
             transform.Find("BtnAdd").GetComponent<Button>().onClick.AddListener(() =>
             {
@@ -34,20 +34,21 @@ namespace CounterApp
 
         private void UpdateView()
         {
-            transform.Find("CountText").GetComponent<Text>().text = CounterModel.Count.ToString();
+            transform.Find("CountText").GetComponent<Text>().text = CounterModel.Instance.Count.ToString();
         }
 
         private void OnDestroy()
         {
-            CounterModel.Count.OnValueChanged -= OnCountChanged;
+            CounterModel.Instance.Count.OnValueChanged -= OnCountChanged;
         }
 
     }
 
-    public class CounterModel
+    public class CounterModel : Singleton<CounterModel>
     {
+        private CounterModel() { }
 
-        public static BindableProperty<int> Count = new BindableProperty<int>()
+        public BindableProperty<int> Count = new BindableProperty<int>()
         {
             Value = 0
         };

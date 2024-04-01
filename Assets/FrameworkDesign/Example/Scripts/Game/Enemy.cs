@@ -8,7 +8,7 @@ namespace FrameworkDesign.Example
         {
             GameObject.Destroy(gameObject);
             //KilledOneEnemyEvent.Trigger();
-            GameModel.KillCount.Value++;
+            new KillEnemyCommand().Execute();
         }
     }
 }
