@@ -14,14 +14,16 @@ namespace CounterApp
             //UpdateView();
             transform.Find("BtnAdd").GetComponent<Button>().onClick.AddListener(() =>
             {
-                CounterModel.Count.Value++;
+                //CounterModel.Count.Value++;
                 //UpdateView();
+                new AddCountCommand().Execute();
             });
 
             transform.Find("BtnSub").GetComponent<Button>().onClick.AddListener(() =>
             {
-                CounterModel.Count.Value--;
+                //CounterModel.Count.Value--;
                 //UpdateView();
+                new SubCountCommand().Execute();
             });
         }
 
