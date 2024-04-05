@@ -1,14 +1,16 @@
-
 using FrameworkDesign;
+using FrameworkDesign.Example;
 using System;
 
-namespace CounterApp
+namespace Counter
 {
     public class CounterApp : Architecture<CounterApp>
     {
         protected override void Init()
         {
-            Register(new CounterModel());
+            RegisterSystem<IAchievementSystem>(new AchievementSystem());
+            RegisterModel<ICounterModel>(new CounterModel());
+            RegisterUtility<IStorage>(new PlayerPrefsStorage());
         }
     }
 }

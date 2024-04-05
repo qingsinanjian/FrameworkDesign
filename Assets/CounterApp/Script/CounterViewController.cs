@@ -3,14 +3,14 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace CounterApp
+namespace Counter
 {
     public class CounterViewController : MonoBehaviour
     {
-        private CounterModel mCounterModel;
+        private ICounterModel mCounterModel;
         private void Start ()
         {
-            mCounterModel = CounterApp.Get<CounterModel>();
+            mCounterModel = CounterApp.Get<ICounterModel>();
             mCounterModel.Count.OnValueChanged += OnCountChanged;
             OnCountChanged(mCounterModel.Count.Value);
             //UpdateView();
@@ -46,14 +46,28 @@ namespace CounterApp
 
     }
 
-    public class CounterModel
+    public interface ICounterModel : IModel
     {
-        //private CounterModel() { }
+        BindableProperty<int> Count { get; }
+    }
 
-        public BindableProperty<int> Count = new BindableProperty<int>()
+    public class CounterModel : ICounterModel
+    {
+        public void Init()
+        {
+            var storage = Architecture.GetUtility<IStorage>();
+            Count.Value = storage.LoadInt("COUNTER_COUNT", 0);
+            Count.OnValueChanged += (count) =>
+            {
+                storage.SaveInt("COUNTER_COUNT", count);
+            };
+        }
+
+        public BindableProperty<int> Count { get; } = new BindableProperty<int>()
         {
             Value = 0
         };
+        public IArchitecture Architecture { get; set; }
     }
 }
 

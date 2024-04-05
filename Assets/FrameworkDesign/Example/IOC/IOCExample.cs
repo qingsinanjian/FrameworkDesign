@@ -7,13 +7,18 @@ namespace FrameworkDesign.Example
         private void Start()
         {
             var container = new IOCContainer();
-            container.Register(new BluetoothManager());
-            var bluetoothManager = container.Get<BluetoothManager>();
+            container.Register<IBluetoothManager>(new BluetoothManager());
+            var bluetoothManager = container.Get<IBluetoothManager>();
             bluetoothManager.Connect();
         }
     }
 
-    public class BluetoothManager
+    public interface IBluetoothManager
+    {
+        void Connect();
+    }
+
+    public class BluetoothManager : IBluetoothManager
     {
         public void Connect()
         {
