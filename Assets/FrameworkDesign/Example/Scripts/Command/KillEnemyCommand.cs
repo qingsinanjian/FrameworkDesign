@@ -2,13 +2,13 @@ using UnityEngine;
 
 namespace FrameworkDesign.Example
 {
-    public struct KillEnemyCommand : ICommand
+    public class KillEnemyCommand : AbstractCommand
     {
-        public void Execute()
+        protected override void OnExecute()
         {
             var gameModel = PointGame.Get<IGameModel>();
             gameModel.KillCount.Value++;
-            if(gameModel.KillCount.Value == 10)
+            if (gameModel.KillCount.Value == 10)
             {
                 GamePassEvent.Trigger();
             }

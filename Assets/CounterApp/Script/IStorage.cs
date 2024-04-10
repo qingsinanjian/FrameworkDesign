@@ -1,11 +1,12 @@
 #if UNITY_EDITOR
+using FrameworkDesign;
 using UnityEditor;
 #endif
 using UnityEngine;
 
 namespace Counter
 {
-    public interface IStorage
+    public interface IStorage : IUtility
     {
         void SaveInt(string key, int value);
         int LoadInt(string key, int defaultValue);

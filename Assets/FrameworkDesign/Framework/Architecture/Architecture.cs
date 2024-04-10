@@ -8,9 +8,11 @@ namespace FrameworkDesign
     {
         void RegisterSystem<T>(T system) where T : ISystem;
         void RegisterModel<T>(T model) where T : IModel;
-        void RegisterUtility<T>(T utility);
+        void RegisterUtility<T>(T utility) where T : IUtility;
         T GetModel<T>() where T : class, IModel;
-        T GetUtility<T>() where T : class;
+        T GetUtility<T>() where T : class, IUtility;
+        void SendCommand<T>() where T : ICommand, new();
+        void SendCommand<T>(T command) where T : ICommand;
     }
 
 
@@ -30,6 +32,18 @@ namespace FrameworkDesign
         public static Action<T> OnRegisterPatch = architecture => { };
 
         private static T mArchitecture;
+
+        public static IArchitecture Interface
+        {
+            get
+            {
+                if (mArchitecture == null)
+                {
+                    MakeSureArchitecture();
+                }
+                return mArchitecture;
+            }
+        }
 
         private static void MakeSureArchitecture()
         {
@@ -74,7 +88,7 @@ namespace FrameworkDesign
 
         public void RegisterSystem<T>(T instance) where T : ISystem
         {
-            instance.Architecture = this;
+            instance.SetArchitecture(this);
             mContainer.Register<T>(instance);
             if (!mInited)
             {
@@ -88,7 +102,7 @@ namespace FrameworkDesign
 
         public void RegisterModel<T>(T model) where T : IModel
         {
-            model.Architecture = this;
+            model.SetArchitecture(this);
             mContainer.Register<T>(model);
             if(!mInited)
             {
@@ -100,7 +114,7 @@ namespace FrameworkDesign
             }
         }
 
-        public void RegisterUtility<T>(T utility)
+        public void RegisterUtility<T>(T utility) where T : IUtility
         {
             mContainer.Register<T>(utility);
         }
@@ -110,9 +124,22 @@ namespace FrameworkDesign
             return mContainer.Get<T>();
         }
 
-        public T GetUtility<T>() where T : class
+        public T GetUtility<T>() where T : class, IUtility
         {
             return mContainer.Get<T>();
+        }
+
+        public void SendCommand<T>() where T : ICommand, new()
+        {
+            var command = new T();
+            command.SetArchitecture(this);
+            command.Execute();
+        }
+
+        public void SendCommand<T>(T command) where T : ICommand
+        {
+            command.SetArchitecture(this);
+            command.Execute();
         }
     }
 }

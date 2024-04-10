@@ -1,16 +1,18 @@
 using FrameworkDesign;
 using System;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Counter
 {
-    public class CounterViewController : MonoBehaviour
+    public class CounterViewController : MonoBehaviour, IController
     {
         private ICounterModel mCounterModel;
+
         private void Start ()
         {
-            mCounterModel = CounterApp.Get<ICounterModel>();
+            mCounterModel = GetArchitecture().GetModel<ICounterModel>();
             mCounterModel.Count.OnValueChanged += OnCountChanged;
             OnCountChanged(mCounterModel.Count.Value);
             //UpdateView();
@@ -18,14 +20,14 @@ namespace Counter
             {
                 //CounterModel.Count.Value++;
                 //UpdateView();
-                new AddCountCommand().Execute();
+                GetArchitecture().SendCommand<AddCountCommand>();
             });
 
             transform.Find("BtnSub").GetComponent<Button>().onClick.AddListener(() =>
             {
                 //CounterModel.Count.Value--;
                 //UpdateView();
-                new SubCountCommand().Execute();
+                GetArchitecture().SendCommand<SubCountCommand>();
             });
         }
 
@@ -44,6 +46,10 @@ namespace Counter
             mCounterModel.Count.OnValueChanged -= OnCountChanged;
         }
 
+        public IArchitecture GetArchitecture()
+        {
+            return CounterApp.Interface;
+        }
     }
 
     public interface ICounterModel : IModel
@@ -51,11 +57,11 @@ namespace Counter
         BindableProperty<int> Count { get; }
     }
 
-    public class CounterModel : ICounterModel
+    public class CounterModel : AbstractModel, ICounterModel
     {
-        public void Init()
+        public override void OnInit()
         {
-            var storage = Architecture.GetUtility<IStorage>();
+            var storage = GetArchitecture().GetUtility<IStorage>();
             Count.Value = storage.LoadInt("COUNTER_COUNT", 0);
             Count.OnValueChanged += (count) =>
             {
@@ -67,7 +73,6 @@ namespace Counter
         {
             Value = 0
         };
-        public IArchitecture Architecture { get; set; }
     }
 }
 
