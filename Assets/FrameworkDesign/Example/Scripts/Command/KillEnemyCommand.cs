@@ -8,6 +8,9 @@ namespace FrameworkDesign.Example
         {
             var gameModel = PointGame.Get<IGameModel>();
             gameModel.KillCount.Value++;
+
+            this.SendEvent<OnEnemyKillEvent>();
+
             if (gameModel.KillCount.Value == 10)
             {
                 this.SendEvent<GamePassEvent>();
