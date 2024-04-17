@@ -12,7 +12,7 @@ namespace Counter
 
         private void Start ()
         {
-            mCounterModel = GetArchitecture().GetModel<ICounterModel>();
+            mCounterModel = this.GetModel<ICounterModel>();
             mCounterModel.Count.OnValueChanged += OnCountChanged;
             OnCountChanged(mCounterModel.Count.Value);
             //UpdateView();
@@ -20,14 +20,14 @@ namespace Counter
             {
                 //CounterModel.Count.Value++;
                 //UpdateView();
-                GetArchitecture().SendCommand<AddCountCommand>();
+                this.SendCommand<AddCountCommand>();
             });
 
             transform.Find("BtnSub").GetComponent<Button>().onClick.AddListener(() =>
             {
                 //CounterModel.Count.Value--;
                 //UpdateView();
-                GetArchitecture().SendCommand<SubCountCommand>();
+                this.SendCommand<SubCountCommand>();
             });
         }
 
@@ -46,7 +46,7 @@ namespace Counter
             mCounterModel.Count.OnValueChanged -= OnCountChanged;
         }
 
-        public IArchitecture GetArchitecture()
+        IArchitecture IBelongToArchitecture.GetArchitecture()
         {
             return CounterApp.Interface;
         }
@@ -61,7 +61,7 @@ namespace Counter
     {
         public override void OnInit()
         {
-            var storage = GetArchitecture().GetUtility<IStorage>();
+            var storage = this.GetUtility<IStorage>();
             Count.Value = storage.LoadInt("COUNTER_COUNT", 0);
             Count.OnValueChanged += (count) =>
             {

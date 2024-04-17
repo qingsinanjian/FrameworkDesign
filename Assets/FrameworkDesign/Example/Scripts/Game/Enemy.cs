@@ -4,7 +4,7 @@ namespace FrameworkDesign.Example
 {
     public class Enemy : MonoBehaviour, IController
     {
-        public IArchitecture GetArchitecture()
+        IArchitecture IBelongToArchitecture.GetArchitecture()
         {
             return PointGame.Interface;
         }
@@ -13,7 +13,7 @@ namespace FrameworkDesign.Example
         {
             GameObject.Destroy(gameObject);
             //KilledOneEnemyEvent.Trigger();
-            GetArchitecture().SendCommand<KillEnemyCommand>();
+            this.SendCommand<KillEnemyCommand>();
         }
     }
 }

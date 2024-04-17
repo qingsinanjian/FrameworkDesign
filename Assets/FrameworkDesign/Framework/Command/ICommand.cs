@@ -1,6 +1,6 @@
 namespace FrameworkDesign
 {
-    public interface ICommand : IBelongToArchitecture, ICanSetArchitecture
+    public interface ICommand : IBelongToArchitecture, ICanSetArchitecture, ICanGetModel, ICanGetSystem, ICanGetUtility, ICanSendEvent, ICanSendCommand
     {
         void Execute();
     }
@@ -15,12 +15,12 @@ namespace FrameworkDesign
 
         protected virtual void OnExecute() { }
 
-        public IArchitecture GetArchitecture()
+        IArchitecture IBelongToArchitecture.GetArchitecture()
         {
             return mArchitecture;
         }
 
-        public void SetArchitecture(IArchitecture architecture)
+        void ICanSetArchitecture.SetArchitecture(IArchitecture architecture)
         {
             mArchitecture = architecture;           
         }

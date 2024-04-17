@@ -19,7 +19,7 @@ public class EditorCounterApp : EditorWindow, IController
         window.Show();
     }
 
-    public IArchitecture GetArchitecture()
+    IArchitecture IBelongToArchitecture.GetArchitecture()
     {
         return CounterApp.Interface;
     }
@@ -28,14 +28,14 @@ public class EditorCounterApp : EditorWindow, IController
     {
         if (GUILayout.Button("+"))
         {
-            GetArchitecture().SendCommand<AddCountCommand>();
+            this.SendCommand<AddCountCommand>();
         }
 
         GUILayout.Label(CounterApp.Get<ICounterModel>().Count.Value.ToString());
 
         if(GUILayout.Button("-"))
         {
-            GetArchitecture().SendCommand<SubCountCommand>();
+            this.SendCommand<SubCountCommand>();
         }
     }
 }

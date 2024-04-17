@@ -6,7 +6,7 @@ namespace Counter
     {
         protected override void OnExecute()
         {
-            GetArchitecture().GetModel<ICounterModel>().Count.Value--;
+            this.GetModel<ICounterModel>().Count.Value--;
         }
     }
 }
